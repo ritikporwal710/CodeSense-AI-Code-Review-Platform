@@ -7,6 +7,8 @@ import logger from "../utils/logger";
 dotenv.config();
 
 // Create PostgreSQL connection pool
+const isRemote = process.env.DB_HOST?.includes("render.com");
+
 const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -16,6 +18,7 @@ const pool = new Pool({
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
+  ssl: isRemote ? { rejectUnauthorized: false } : false,
 });
 
 pool.on("error", (err) => {
